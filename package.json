@@ -1,0 +1,32 @@
+{
+  "name": "node-aes-ccm",
+  "version": "1.0.0",
+  "description": "AES CCM support for io.js using OpenSSL",
+  "main": "index.js",
+  "scripts": {
+    "configure": "node-gyp configure",
+    "build": "node-gyp build",
+    "test": "node test/test.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/spark/node-aes-ccm.git"
+  },
+  "keywords": [
+    "aes",
+    "ccm",
+    "openssl"
+  ],
+  "author": "Bryce Kahle <bryce@particle.io>",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/spark/node-aes-ccm/issues"
+  },
+  "homepage": "https://github.com/spark/node-aes-ccm#readme",
+  "dependencies": {
+    "nan": "^2.0.5"
+  },
+  "engines": {
+    "iojs": ">=3.0.0"
+  }
+}
