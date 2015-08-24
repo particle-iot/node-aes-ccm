@@ -23,9 +23,7 @@
     "url": "https://github.com/spark/node-aes-ccm/issues"
   },
   "homepage": "https://github.com/spark/node-aes-ccm#readme",
-  "dependencies": {
-    "nan": "^2.0.5"
-  },
+  "dependencies": {},
   "engines": {
     "iojs": ">=3.0.0"
   }
