@@ -6,7 +6,9 @@
   "scripts": {
     "configure": "node-gyp configure",
     "build": "node-gyp build",
-    "test": "node test/test.js"
+    "test": "node test/test.js",
+    "preinstall": "true",
+    "install": "node-gyp-install && node-gyp rebuild"
   },
   "repository": {
     "type": "git",
@@ -23,7 +25,9 @@
     "url": "https://github.com/spark/node-aes-ccm/issues"
   },
   "homepage": "https://github.com/spark/node-aes-ccm#readme",
-  "dependencies": {},
+  "dependencies": {
+    "node-gyp-install": "^2.0.1"
+  },
   "engines": {
     "iojs": ">=3.0.0"
   }
