@@ -5,3 +5,4 @@ addons:
   apt:
     packages:
     - gcc-4.8
+after_install: gcc -v
