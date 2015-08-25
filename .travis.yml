@@ -1,4 +1,7 @@
 language: node_js
 node_js:
   - "iojs"
-before_install: "gcc -v && make -v && python -V"
+addons:
+  apt:
+    packages:
+    - gcc-4.8
