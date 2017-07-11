@@ -7,11 +7,11 @@
     "configure": "node-gyp configure",
     "build": "node-gyp build",
     "test": "node test/test.js",
-    "install": "node-gyp-install && node-gyp rebuild"
+    "install": "node-gyp install && node-gyp rebuild"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/spark/node-aes-ccm.git"
+    "url": "git+https://github.com/AlCalzone/node-aes-ccm.git"
   },
   "keywords": [
     "aes",
