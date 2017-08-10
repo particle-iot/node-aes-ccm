@@ -1,9 +1,4 @@
 # adapted from https://github.com/tessel/node-usb/blob/master/appveyor.yml
-branches:
-  only:
-    - master
-    - appveyor
-    - /^v?[0-9]/
 
 environment:
   NODE_PRE_GYP_GITHUB_TOKEN:
@@ -31,15 +26,20 @@ install:
   # This fixes an issue with Node 4.x on x86. If it builds without this line
   # needing to be set, we can remove it.
   - ps: npm config -g set node-gyp "$(npm config -g get prefix)\node_modules\node-gyp\bin\node-gyp.js"
-  - ps: if($env:APPVEYOR_REPO_COMMIT_MESSAGE.ToLower().Contains('[publish binary]')) { $env:PUBLISH_BINARY=true }
+  - ps: |
+      if (
+        ($env:appveyor_repo_tag -match "true" 
+        -and $env:appveyor_repo_tag_name -match '^v?[0-9]')
+        -or APPVEYOR_REPO_COMMIT_MESSAGE.ToLower().Contains('[publish binary]')
+        ) { $publish_binary=1; }
 
 build_script:
-  - ps: echo $env:PUBLISH_BINARY
+  - ps: echo $publish_binary
   - npm install --build-from-source
   - ./node_modules/.bin/node-pre-gyp package
   - ps: |
       $ErrorActionPreference = 'Continue'
-      if ($env:PUBLISH_BINARY==true) {
+      if ($publish_binary -Eq "1") {
         node-pre-gyp-github publish 2>&1 | write-host
         if (-Not ($?)) {
           throw "Failed publishing";
