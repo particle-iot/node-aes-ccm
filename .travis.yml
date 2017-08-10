@@ -26,21 +26,16 @@ sudo: false
 before_install:
 # Use gcc 4.8 on linux and clang on osx
 - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then export CXX=g++-4.8; fi
-
 # get commit message
 - COMMIT_MESSAGE=$(git show -s --format=%B $TRAVIS_COMMIT | tr -d '\n')
-
 # put local node_modules on PATH
 - export PATH=./node_modules/.bin/:$PATH
-
 # put global node-gyp on PATH
 - eval npm install -g node-gyp
 
 - PUBLISH_BINARY=false
-
 # if we are building a tag then publish
 - if [[ $TRAVIS_BRANCH == `git describe --tags --always HEAD` ]]; then PUBLISH_BINARY=true; fi;
-
 # or if we put [publish binary] in the commit message
 - if test "${COMMIT_MESSAGE#*'[publish binary]'}" != "$COMMIT_MESSAGE"; then PUBLISH_BINARY=true; fi;
 
@@ -48,19 +43,13 @@ install:
 # ensure source install works
 - eval npm install --build-from-source
 
-before_script:
+script:
 - if [[ $PUBLISH_BINARY == true ]]; then
     node-pre-gyp package;
     node-pre-gyp-github publish;
   fi;
 - node-pre-gyp clean
 - node-gyp clean
-
-script:
-# if publishing, test installing from remote
-- if [[ $PUBLISH_BINARY == true ]]; then eval npm install --fallback-to-build=false; fi;
-# If success then we arrive here so lets clean up
-- node-pre-gyp clean
 
 after_success:
 # if success then query and display all published binaries
