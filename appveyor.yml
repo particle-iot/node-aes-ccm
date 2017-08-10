@@ -11,11 +11,9 @@ environment:
     secure: Wp85FZ3/lEWE9gP+vsr/4/CEhVnS3ApcGRcOWNlSGdYxjvQ07/LyiHOioY687n8l
 
   matrix:
-  - nodejs_version: "0.10"
-  - nodejs_version: "0.12"
   - nodejs_version: 4
   - nodejs_version: 6
-  - nodejs_version: 7
+  - nodejs_version: 8
 
 platform:
   - x86
