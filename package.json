@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "node test/test.js",
+    "prepublish": "npm ls",
     "install": "node-pre-gyp install --fallback-to-build"
   },
   "repository": {

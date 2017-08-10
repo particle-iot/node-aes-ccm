@@ -34,7 +34,7 @@ before_install:
 - export PATH=./node_modules/.bin/:$PATH
 
 # put global node-gyp on PATH
-- eval $INSTALL_GLOBAL node-gyp
+- eval npm install -g node-gyp
 
 - PUBLISH_BINARY=false
 
