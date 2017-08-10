@@ -33,8 +33,8 @@ install:
   - ps: npm config -g set node-gyp "$(npm config -g get prefix)\node_modules\node-gyp\bin\node-gyp.js"
   - ps: |
       if (
-        $env:appveyor_repo_tag -match "true" 
-        -and $env:appveyor_repo_tag_name -match '^v?[0-9]' 
+        ($env:appveyor_repo_tag -match "true" 
+        -and $env:appveyor_repo_tag_name -match '^v?[0-9]')
         -or APPVEYOR_REPO_COMMIT_MESSAGE.ToLower().Contains('[publish binary]')
         ) { $publish_binary=1; }
 
