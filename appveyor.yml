@@ -17,7 +17,7 @@ configuration:
   - Release
 
 install:
-  - ps: if($env:APPVEYOR_REPO_COMMIT_MESSAGE.ToLower().Contains('[publish binary]')) { node-pre-gyp package && node-pre-gyp-github publish }
+  - ps: if($env:APPVEYOR_REPO_COMMIT_MESSAGE.ToLower().Contains('[publish binary]')) { scripts/build-appveyor.bat }
 
 build: OFF
 test: OFF
