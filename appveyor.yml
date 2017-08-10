@@ -39,8 +39,6 @@ build_script:
         if (-Not ($?)) {
           throw "Failed publishing";
         }
-        node-pre-gyp clean
-        npm install --fallback-to-build=false
       }
       echo "done."
 
