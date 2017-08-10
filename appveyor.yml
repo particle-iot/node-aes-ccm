@@ -20,9 +20,10 @@ install:
   - cmd: SET PUBLISH_BINARY=false
   - ps: if($env:APPVEYOR_REPO_COMMIT_MESSAGE.ToLower().Contains('[publish binary]')) { $env:PUBLISH_BINARY=true }
   - cmd: ECHO %PUBLISH_BINARY%
-  - cmd: IF %PUBLISH_BINARY%==true node-pre-gyp package 2>&1
-  - cmd: IF %PUBLISH_BINARY%==true node-pre-gyp-github publish --release 2>&1
-  - cmd: IF %PUBLISH_BINARY%==true node-pre-gyp clean
+  - cmd: IF %PUBLISH_BINARY%==true node-pre-gyp configure
+  - cmd: IF %PUBLISH_BINARY%==true node-pre-gyp build
+  - cmd: IF %PUBLISH_BINARY%==true node-pre-gyp package
+  - cmd: IF %PUBLISH_BINARY%==true node-pre-gyp-github publish
 
 build: OFF
 test: OFF
