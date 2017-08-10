@@ -39,10 +39,10 @@ install:
   - cmd: IF not x%COMMIT_MSG:[publish binary]=%==x%COMMIT_MSG% SET PUBLISH_BINARY=true
   - cmd: ECHO %PUBLISH_BINARY%
 
-  on_success:
-    - cmd: IF %PUBLISH_BINARY%==true (node-pre-gyp package 2>&1)
-    - cmd: IF %PUBLISH_BINARY%==true (node-pre-gyp-github publish --release 2>&1)
-    - cmd: IF %PUBLISH_BINARY%==true (node-pre-gyp clean)
+on_success:
+  - cmd: IF %PUBLISH_BINARY%==true (node-pre-gyp package 2>&1)
+  - cmd: IF %PUBLISH_BINARY%==true (node-pre-gyp-github publish --release 2>&1)
+  - cmd: IF %PUBLISH_BINARY%==true (node-pre-gyp clean)
 
 test: OFF
 deploy: OFF
