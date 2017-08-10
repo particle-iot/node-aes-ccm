@@ -1,7 +1,7 @@
 # node-aes-ccm
 
-[![npm version](https://img.shields.io/npm/v/node-aes-ccm.svg?style=flat-square)](https://www.npmjs.com/package/sockjs-client)[![Build Status](https://img.shields.io/travis/spark/node-aes-ccm/master.svg?style=flat-square)](https://travis-ci.org/spark/node-aes-ccm)
-
+This is sparks's node-aes-ccm module. I just forked it to have a stable copy of it.
+This is not my code. If you have any issues, contact spark.
 
 AES CCM module for io.js using OpenSSL
 
