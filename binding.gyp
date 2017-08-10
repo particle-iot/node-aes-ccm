@@ -1,7 +1,7 @@
 {
 	"targets": [
 		{
-			"target_name": "node_aes_ccm",
+			"target_name": "<(module_name)",
 			"sources": [
 				"src/node-aes-ccm.cc"
 			],
@@ -42,6 +42,17 @@
 					}
 				],
 			],
-		}
+		},
+		{
+			"target_name": "action_after_build",
+			"type": "none",
+			"dependencies": [ "<(module_name)" ],
+			"copies": [
+				{
+					"files": [ "<(PRODUCT_DIR)/<(module_name).node" ],
+					"destination": "<(module_path)"
+				}
+			]
+		}		
 	]
 }

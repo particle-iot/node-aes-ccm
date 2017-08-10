@@ -1,0 +1,24 @@
+os: Visual Studio 2015
+
+environment:
+  NODE_PRE_GYP_GITHUB_TOKEN:
+    secure: Wp85FZ3/lEWE9gP+vsr/4/CEhVnS3ApcGRcOWNlSGdYxjvQ07/LyiHOioY687n8l
+
+  matrix:
+  - nodejs_version: 4
+  - nodejs_version: 6
+  - nodejs_version: 8
+
+platform:
+  - x86
+  - x64
+
+configuration:
+  - Release
+
+install:
+  - ps: if($env:APPVEYOR_REPO_COMMIT_MESSAGE.ToLower().Contains('[publish binary]')) { node-pre-gyp package && node-pre-gyp-github publish }
+
+build: OFF
+test: OFF
+deploy: OFF

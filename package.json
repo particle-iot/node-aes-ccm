@@ -1,13 +1,11 @@
 {
   "name": "node-aes-ccm",
-  "version": "1.0.2",
+  "version": "1.1.0-alpha",
   "description": "AES CCM support for io.js using OpenSSL",
   "main": "index.js",
   "scripts": {
-    "configure": "node-gyp configure",
-    "build": "node-gyp build",
     "test": "node test/test.js",
-    "install": "node-gyp-install && node-gyp rebuild"
+    "install": "node-pre-gyp install --fallback-to-build"
   },
   "repository": {
     "type": "git",
@@ -18,16 +16,27 @@
     "ccm",
     "openssl"
   ],
-  "author": "Bryce Kahle <bryce@particle.io>",
+  "author": "AlCalzone <d.griesel@gmx.net>",
   "license": "Apache-2.0",
   "bugs": {
-    "url": "https://github.com/spark/node-aes-ccm/issues"
+    "url": "https://github.com/AlCalzone/node-aes-ccm/issues"
   },
-  "homepage": "https://github.com/spark/node-aes-ccm#readme",
+  "homepage": "https://github.com/AlCalzone/node-aes-ccm",
   "dependencies": {
-    "node-gyp-install": "^2.0.1"
+    "node-pre-gyp": "^0.6.36",
+    "node-pre-gyp-github": "^1.3.1"
   },
+  "bundledDependencies": [
+    "node-pre-gyp"
+  ],
   "engines": {
     "iojs": ">=3.0.0"
+  },
+  "binary": {
+    "module_name": "node_aes_ccm",
+    "module_path": "./build/{configuration}/{node_abi}-{platform}-{arch}/",
+    "package_name": "{node_abi}-{platform}-{arch}.tar.gz",
+    "host": "https://github.com/AlCalzone/node-aes-ccm/releases/download/",
+    "remote_path": "v{version}"
   }
 }
