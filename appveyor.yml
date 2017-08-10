@@ -39,6 +39,10 @@ install:
   - cmd: IF not x%COMMIT_MSG:[publish binary]=%==x%COMMIT_MSG% SET PUBLISH_BINARY=true
   - cmd: ECHO %PUBLISH_BINARY%
 
+# don't use standard MSBuild
+build_script:
+  - cmd: "npm install --build-from-source --msvs_version=2015"
+
 on_success:
   - cmd: IF %PUBLISH_BINARY%==true (node-pre-gyp package 2>&1)
   - cmd: IF %PUBLISH_BINARY%==true (node-pre-gyp-github publish --release 2>&1)
