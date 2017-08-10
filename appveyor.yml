@@ -25,8 +25,6 @@ platform:
 configuration:
   - Release
 
-ps: if()
-
 install:
   - ps: Install-Product node $env:node_version $env:platform
   - npm install -g node-gyp node-pre-gyp node-pre-gyp-github
