@@ -41,6 +41,7 @@ void CcmEncrypt(const FunctionCallbackInfo<Value>& args) {
   // plaintext, but padded to 16 byte increments
   size_t plaintext_len = Buffer::Length(args[2]);
   size_t ciphertext_len = (((plaintext_len - 1) / 16) + 1) * 16;
+  size_t key_len = Buffer::Length(args[0]);
   unsigned char *ciphertext = new unsigned char[ciphertext_len];
   // Make a authentication tag buffer
   int auth_tag_len = args[4]->NumberValue();
@@ -50,10 +51,14 @@ void CcmEncrypt(const FunctionCallbackInfo<Value>& args) {
   // key and IV
   int outl;
   EVP_CIPHER_CTX *ctx = EVP_CIPHER_CTX_new();
-  EVP_EncryptInit_ex(ctx, EVP_aes_128_ccm(), NULL, NULL, NULL);
-  
+  if (key_len == 16) {
+    EVP_EncryptInit_ex(ctx, EVP_aes_128_ccm(), NULL, NULL, NULL);
+  } else {
+    EVP_EncryptInit_ex(ctx, EVP_aes_256_ccm(), NULL, NULL, NULL);
+  }
+
   size_t iv_len = Buffer::Length(args[1]);
-  
+
   // set iv and auth tag length
   EVP_CIPHER_CTX_ctrl(ctx, EVP_CTRL_CCM_SET_IVLEN, iv_len, NULL);
   // EVP_CIPHER_CTX_ctrl(ctx, EVP_CTRL_CCM_SET_L, 3, NULL);
@@ -123,13 +128,18 @@ void CcmDecrypt(const FunctionCallbackInfo<Value>& args) {
   size_t ciphertext_len = Buffer::Length(args[2]);
   size_t plaintext_len = (((ciphertext_len - 1) / 16) + 1) * 16;
   int aad_len = Buffer::Length(args[3]);
+  size_t key_len = Buffer::Length(args[0]);
   unsigned char *plaintext = new unsigned char[plaintext_len];
 
   // Init OpenSSL interace with 128-bit AES GCM cipher and give it the
   // key and IV
   int outl;
   EVP_CIPHER_CTX *ctx = EVP_CIPHER_CTX_new();
-  EVP_DecryptInit_ex(ctx, EVP_aes_128_ccm(), NULL, NULL, NULL);
+  if (key_len == 16) {
+    EVP_DecryptInit_ex(ctx, EVP_aes_128_ccm(), NULL, NULL, NULL);
+  } else {
+    EVP_DecryptInit_ex(ctx, EVP_aes_256_ccm(), NULL, NULL, NULL);
+  }
 
   size_t iv_len = Buffer::Length(args[1]);
   EVP_CIPHER_CTX_ctrl(ctx, EVP_CTRL_CCM_SET_IVLEN, iv_len, 0);
