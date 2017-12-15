@@ -15,23 +15,45 @@ using v8::Exception;
 using v8::Boolean;
 using namespace node;
 
-// Perform GCM mode AES-128 encryption using the provided key, IV, plaintext
-// and auth_data buffers, and return an object containing "ciphertext"
-// and "auth_tag" buffers.
 
+/**
+  Does the 128 or 256 OpenSSL init
+
+  @param key, they key that will be used for the crypto operation.
+
+  @return EVP_CIPHER value returned from OpenSSL function.
+*/
+const EVP_CIPHER* EVP_aes_star_ccm(Local<Value> key) {
+  size_t key_len = Buffer::Length(key);
+  return (key_len == 16) ? EVP_aes_128_ccm() : EVP_aes_256_ccm();
+}
+
+
+/**
+  Perform CCM mode AES-128 and AES-256 encryption using the provided key,
+  IV, plaintext and auth_data buffers. Return an object containing "ciphertext"
+  and "auth_tag" buffers.
+
+  @param key, they key to encrypt with 16 or 32 bits
+  @param iv, the initialization vector to user for the encryption
+  @param plaintext, data to encrypt
+  @param aad, additionaly authenticated data
+  @param auth_tag_length, length of auth tag
+
+  @return object containing "ciphertext" and "auth_tag" buffers.
+*/
 void CcmEncrypt(const FunctionCallbackInfo<Value>& args) {
   Isolate* isolate = args.GetIsolate();
 
-  // We want 5 arguments
-  // key
-  // iv
-  // plaintext
-  // aad
-  // auth tag length
-  if (args.Length() < 4 || !Buffer::HasInstance(args[0]) ||
-      !Buffer::HasInstance(args[1]) || !Buffer::HasInstance(args[2]) ||
-      !Buffer::HasInstance(args[3]) || !args[4]->IsNumber()) {
-    isolate->ThrowException(Exception::TypeError(String::NewFromUtf8(isolate, "encrypt requires a key Buffer, a " \
+  if (args.Length() < 4 ||
+      !Buffer::HasInstance(args[0]) ||
+      !Buffer::HasInstance(args[1]) ||
+      !Buffer::HasInstance(args[2]) ||
+      !Buffer::HasInstance(args[3]) ||
+      !args[4]->IsNumber()) {
+    isolate->ThrowException(
+      Exception::TypeError(
+        String::NewFromUtf8(isolate, "encrypt requires a key Buffer, a " \
                       "IV Buffer, a plaintext Buffer, an auth_data " \
                       "Buffer parameter, and the length of the auth tag")));
     return;
@@ -41,27 +63,22 @@ void CcmEncrypt(const FunctionCallbackInfo<Value>& args) {
   // plaintext, but padded to 16 byte increments
   size_t plaintext_len = Buffer::Length(args[2]);
   size_t ciphertext_len = (((plaintext_len - 1) / 16) + 1) * 16;
-  size_t key_len = Buffer::Length(args[0]);
   unsigned char *ciphertext = new unsigned char[ciphertext_len];
+
   // Make a authentication tag buffer
   int auth_tag_len = args[4]->NumberValue();
   unsigned char *auth_tag = new unsigned char[auth_tag_len];
 
-  // Init OpenSSL interace with 128-bit AES GCM cipher and give it the
+  // Init OpenSSL interace with 128-bit or 256-bit AES CCM cipher and give it the
   // key and IV
-  int outl;
+  int outl = 0;
   EVP_CIPHER_CTX *ctx = EVP_CIPHER_CTX_new();
-  if (key_len == 16) {
-    EVP_EncryptInit_ex(ctx, EVP_aes_128_ccm(), NULL, NULL, NULL);
-  } else {
-    EVP_EncryptInit_ex(ctx, EVP_aes_256_ccm(), NULL, NULL, NULL);
-  }
+  EVP_EncryptInit_ex(ctx, EVP_aes_star_ccm(args[0]), NULL, NULL, NULL);
 
   size_t iv_len = Buffer::Length(args[1]);
 
   // set iv and auth tag length
   EVP_CIPHER_CTX_ctrl(ctx, EVP_CTRL_CCM_SET_IVLEN, iv_len, NULL);
-  // EVP_CIPHER_CTX_ctrl(ctx, EVP_CTRL_CCM_SET_L, 3, NULL);
   EVP_CIPHER_CTX_ctrl(ctx, EVP_CTRL_CCM_SET_TAG, auth_tag_len, NULL);
 
   EVP_EncryptInit_ex(ctx, NULL, NULL,
@@ -70,11 +87,11 @@ void CcmEncrypt(const FunctionCallbackInfo<Value>& args) {
 
   int aad_len = Buffer::Length(args[3]);
   EVP_EncryptUpdate(ctx, NULL, &outl, NULL, plaintext_len);
+
   // Pass additional authenticated data
   // There is some extra complication here because Buffer::Data seems to
   // return NULL for empty buffers, and NULL makes update not work as we
   // expect it to.  So we force a valid non-NULL pointer for empty buffers.
-
   EVP_EncryptUpdate(ctx, NULL, &outl, aad_len ?
                     (unsigned char *)Buffer::Data(args[3]) : auth_tag,
                     aad_len);
@@ -101,22 +118,28 @@ void CcmEncrypt(const FunctionCallbackInfo<Value>& args) {
   args.GetReturnValue().Set(return_obj);
 }
 
-// Perform GCM mode AES-128 decryption using the provided key, IV, ciphertext,
-// auth_data and auth_tag buffers, and return an object containing a "plaintext"
-// buffer and an "auth_ok" boolean.
+/**
+  Perform CCM mode AES-128 and AES-256 decryption using the provided key, IV,
+  ciphertext, auth_data and auth_tag buffers. Returns an object containing
+  a "plaintext" buffer and an "auth_ok" boolean.
 
+  @param key, they key to encrypt with 16 or 32 bits
+  @param iv, the initialization vector to user for the encryption.
+  @param ciphertext, the encrypted data.
+  @param aad, additionaly authenticated data.
+  @param auth_tag, the auth tag.
+
+  @return object containing "plaintext" and an "auth_ok" boolean.
+*/
 void CcmDecrypt(const FunctionCallbackInfo<Value>& args) {
   Isolate* isolate = args.GetIsolate();
 
-  // We want 5 buffer arguments
-  // key
-  // IV
-  // ciphertext
-  // aad
-  // auth_tag
-  if (args.Length() < 5 || !Buffer::HasInstance(args[0]) ||
-      !Buffer::HasInstance(args[1]) || !Buffer::HasInstance(args[2]) ||
-      !Buffer::HasInstance(args[3]) || !Buffer::HasInstance(args[4])
+  if (args.Length() < 5 ||
+      !Buffer::HasInstance(args[0]) ||
+      !Buffer::HasInstance(args[1]) ||
+      !Buffer::HasInstance(args[2]) ||
+      !Buffer::HasInstance(args[3]) ||
+      !Buffer::HasInstance(args[4])
      ) {
     isolate->ThrowException(Exception::TypeError(String::NewFromUtf8(isolate, "decrypt requires a key Buffer, a " \
                       "IV Buffer, a ciphertext Buffer, an auth_data " \
@@ -128,18 +151,13 @@ void CcmDecrypt(const FunctionCallbackInfo<Value>& args) {
   size_t ciphertext_len = Buffer::Length(args[2]);
   size_t plaintext_len = (((ciphertext_len - 1) / 16) + 1) * 16;
   int aad_len = Buffer::Length(args[3]);
-  size_t key_len = Buffer::Length(args[0]);
   unsigned char *plaintext = new unsigned char[plaintext_len];
 
-  // Init OpenSSL interace with 128-bit AES GCM cipher and give it the
-  // key and IV
-  int outl;
+  // Init OpenSSL interace with 128-bit or 256-bit AES CCM cipher and give it
+  // the key and IV.
+  int outl = 0;
   EVP_CIPHER_CTX *ctx = EVP_CIPHER_CTX_new();
-  if (key_len == 16) {
-    EVP_DecryptInit_ex(ctx, EVP_aes_128_ccm(), NULL, NULL, NULL);
-  } else {
-    EVP_DecryptInit_ex(ctx, EVP_aes_256_ccm(), NULL, NULL, NULL);
-  }
+  EVP_DecryptInit_ex(ctx, EVP_aes_star_ccm(args[0]), NULL, NULL, NULL);
 
   size_t iv_len = Buffer::Length(args[1]);
   EVP_CIPHER_CTX_ctrl(ctx, EVP_CTRL_CCM_SET_IVLEN, iv_len, 0);
@@ -148,12 +166,14 @@ void CcmDecrypt(const FunctionCallbackInfo<Value>& args) {
   size_t auth_tag_len = Buffer::Length(args[4]);
   EVP_CIPHER_CTX_ctrl(ctx, EVP_CTRL_CCM_SET_TAG, auth_tag_len,
                     Buffer::Data(args[4]));
+
   // Example showed we needed to do init again
   EVP_DecryptInit_ex(ctx, NULL, NULL,
                     (unsigned char *)Buffer::Data(args[0]),
                     (unsigned char *)Buffer::Data(args[1]));
 
   EVP_DecryptUpdate(ctx, NULL, &outl, NULL, ciphertext_len);
+
   // Pass additional authenticated data
   // There is some extra complication here because Buffer::Data seems to
   // return NULL for empty buffers, and NULL makes update not work as we
@@ -161,12 +181,12 @@ void CcmDecrypt(const FunctionCallbackInfo<Value>& args) {
   EVP_DecryptUpdate(ctx, NULL, &outl, Buffer::Length(args[3]) ?
                     (unsigned char *)Buffer::Data(args[3]) : plaintext,
                     aad_len);
+
   // Decrypt ciphertext
   bool auth_ok = EVP_DecryptUpdate(ctx, plaintext, &outl,
                     (unsigned char *)Buffer::Data(args[2]),
                     ciphertext_len);
   // Finalize
-  //bool auth_ok = EVP_DecryptFinal_ex(ctx, plaintext + outl, &outl);
   // Free the OpenSSL interface structure
   EVP_CIPHER_CTX_free(ctx);
 
