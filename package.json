@@ -1,34 +1,42 @@
 {
-  "name": "node-aes-ccm",
-  "version": "1.0.2",
-  "description": "AES CCM support for io.js using OpenSSL",
-  "main": "index.js",
+  "name": "aes-ccm",
+  "version": "1.0.0",
+  "description": "AES CCM support using OpenSSL",
+  "main": "lib/index.js",
   "scripts": {
     "configure": "node-gyp configure",
     "build": "node-gyp build",
-    "test": "node test/test.js",
+    "pretest": "semistandard",
+    "coverage": "nyc npm test",
+    "coveragehtml": "nyc report -r html",
+    "precoveragehtml": "npm run coverage",
+    "coveralls": "nyc report --reporter=text-lcov | coveralls",
+    "test": "ava test",
     "preinstall": "true",
     "install": "node-gyp-install && node-gyp rebuild"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/spark/node-aes-ccm.git"
+    "url": "git+https://github.com/erdtman/aes-ccm"
   },
   "keywords": [
     "aes",
     "ccm",
     "openssl"
   ],
-  "author": "Bryce Kahle <bryce@particle.io>",
+  "author": "Samuel Erdtman",
   "license": "Apache-2.0",
   "bugs": {
-    "url": "https://github.com/spark/node-aes-ccm/issues"
+    "url": "https://github.com/erdtman/aes-ccm/issues"
   },
-  "homepage": "https://github.com/spark/node-aes-ccm#readme",
+  "homepage": "https://github.com/erdtman/aes-ccm",
   "dependencies": {
     "node-gyp-install": "^2.0.1"
   },
-  "engines": {
-    "iojs": ">=3.0.0"
+  "devDependencies": {
+    "ava": "*",
+    "npm-run-all": "*",
+    "nyc": "*",
+    "semistandard": "*"
   }
 }

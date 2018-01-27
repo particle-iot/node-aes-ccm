@@ -7,11 +7,7 @@ AES CCM module for io.js using OpenSSL
 
 ## Installation
 
-`npm install node-aes-ccm`
-
-## Requirements
-
-`node-aes-ccm` requires io.js >= 3.0 because we need OpenSSL 1.0.2d or later for AES CCM support.
+`npm install aes-ccm`
 
 ## encrypt
 
@@ -41,4 +37,4 @@ AES CCM module for io.js using OpenSSL
 
 ## References
 
-Modeled after [node-aes-gcm](https://github.com/xorbit/node-aes-gcm).
+Copied from [node-aes-ccm](https://github.com/particle-iot/node-aes-ccm).
