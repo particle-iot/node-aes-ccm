@@ -10,13 +10,23 @@ addons:
     - ubuntu-toolchain-r-test
     packages:
     - g++-4.8
+before_install:
+- brew update
+- brew install pyenv
+- eval "$(pyenv init -)"
+- pyenv install 2.7.6
+- pyenv global 2.7.6
+- pyenv rehash
+- pip install cpp-coveralls
+- pyenv rehash
 install:
 - npm install
 - npm install coveralls
 script:
+- ./configure --enable-gcov && make && make check
 - npm run coverage
 after_success:
-- npm run coveralls
+- npm run coveralls --exclude tests --gcov-options '\-lp'
 cache:
   directories:
     - node_modules

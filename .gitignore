@@ -2,6 +2,7 @@
 logs
 *.log
 .nyc_output/
+.DS_Store
 # Runtime data
 pids
 *.pid
