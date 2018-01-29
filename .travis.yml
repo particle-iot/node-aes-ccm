@@ -1,7 +1,5 @@
 language: node_js
 sudo: false
-compiler:
-  - gcc
 node_js:
 - '6'
 env:
@@ -12,16 +10,13 @@ addons:
     - ubuntu-toolchain-r-test
     packages:
     - g++-4.8
-before_install:
-- pip install --user cpp-coveralls
 install:
 - npm install
 - npm install coveralls
 script:
-- ./configure --enable-gcov && make && make check
 - npm run coverage
 after_success:
-- npm run coveralls --exclude tests --gcov-options '\-lp'
+- npm run coveralls
 cache:
   directories:
-    - node_modules
+- node_modules
