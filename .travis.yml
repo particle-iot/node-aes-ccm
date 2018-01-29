@@ -1,5 +1,7 @@
 language: node_js
 sudo: false
+compiler:
+  - gcc
 node_js:
 - '6'
 env:
@@ -11,14 +13,7 @@ addons:
     packages:
     - g++-4.8
 before_install:
-- brew update
-- brew install pyenv
-- eval "$(pyenv init -)"
-- pyenv install 2.7.6
-- pyenv global 2.7.6
-- pyenv rehash
-- pip install cpp-coveralls
-- pyenv rehash
+- pip install --user cpp-coveralls
 install:
 - npm install
 - npm install coveralls
