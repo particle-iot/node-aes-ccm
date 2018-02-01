@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/erdtman/aes-ccm.svg?branch=master)](https://travis-ci.org/erdtman/aes-ccm)
+
 # aes-ccm
 
 AES CCM module using OpenSSL
