@@ -17,7 +17,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/johannespfeiffer/aes-ccm.git"
+    "url": "git+https://github.com/erdtman/aes-ccm.git"
   },
   "keywords": [
     "aes",
@@ -44,7 +44,7 @@
   "binary": {
     "module_name": "aes_ccm",
     "module_path": "./build/Release",
-    "host": "https://github.com/johannespfeiffer/aes-ccm/releases/download/",
+    "host": "https://github.com/erdtman/aes-ccm/releases/download/",
     "remote_path": "{version}"
   }
 }
