@@ -13,11 +13,11 @@
     "coveralls": "nyc report --reporter=text-lcov | coveralls",
     "test": "ava test",
     "preinstall": "true",
-    "install": "node-gyp-install && node-gyp rebuild"
+    "install": "node-pre-gyp install --fallback-to-build"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/erdtman/aes-ccm"
+    "url": "git+https://github.com/johannespfeiffer/aes-ccm.git"
   },
   "keywords": [
     "aes",
@@ -31,12 +31,20 @@
   },
   "homepage": "https://github.com/erdtman/aes-ccm",
   "dependencies": {
-    "node-gyp-install": "^2.0.1"
+    "node-gyp-install": "^2.0.1",
+    "node-pre-gyp": "^0.12.0"
   },
   "devDependencies": {
     "ava": "*",
+    "node-pre-gyp-github": "^1.4.3",
     "npm-run-all": "*",
     "nyc": "*",
     "semistandard": "*"
+  },
+  "binary": {
+    "module_name": "aes_ccm",
+    "module_path": "./build/Release",
+    "host": "https://github.com/johannespfeiffer/aes-ccm/releases/download/",
+    "remote_path": "{version}"
   }
 }
