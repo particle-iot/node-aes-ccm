@@ -17,6 +17,7 @@ script:
 - npm run coverage
 after_success:
 - npm run coveralls
+- docker-compose up 
 cache:
   directories:
     - node_modules
