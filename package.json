@@ -1,6 +1,6 @@
 {
   "name": "aes-ccm",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "AES CCM support using OpenSSL",
   "main": "lib/index.js",
   "scripts": {
